@@ -2,10 +2,10 @@ package database
 
 import (
 	"bytes"
-	"io"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"io"
 	"io/fs"
 	"os"
 	"path"
@@ -46,7 +46,7 @@ func initVersion() error {
 	}
 	if count == 0 {
 		VersionStatus := &model.VersionStatus{
-			Version: "未更新",
+			Version: "Not updated",
 		}
 		return db.Create(VersionStatus).Error
 	}
@@ -87,7 +87,7 @@ func InitDB(dbPath string) error {
 	if err != nil {
 		return err
 	}
-	
+
 	err = initVersion()
 	if err != nil {
 		return err
@@ -121,4 +121,3 @@ func IsSQLiteDB(file io.Reader) (bool, error) {
 	}
 	return bytes.Equal(buf, signature), nil
 }
- 
