@@ -6,15 +6,15 @@
     <a-form-item label='path'>
         <a-input v-model.trim="inbound.stream.splithttp.path"></a-input>
     </a-form-item>
-    <a-form-item label="请求头">
+    <a-form-item label="Request header">
         <a-row>
             <a-button size="small" @click="inbound.stream.splithttp.addHeader('Host', '')">
                 +
             </a-button>
         </a-row>
         <a-input-group v-for="(header, index) in inbound.stream.splithttp.headers">
-            <a-input style="width: 50%" v-model.trim="header.name" addon-before="名称"></a-input>
-            <a-input style="width: 50%" v-model.trim="header.value" addon-before="值">
+            <a-input style="width: 50%" v-model.trim="header.name" addon-before="Name"></a-input>
+            <a-input style="width: 50%" v-model.trim="header.value" addon-before="Value">
                 <template slot="addonAfter">
                     <a-button size="small" @click="inbound.stream.splithttp.removeHeader(index)">
                         -
@@ -26,7 +26,7 @@
     <a-form-item label="Mode">
         <a-select v-model="inbound.stream.splithttp.mode" style="width: 50%">
             <a-select-option v-for="key in MODE_OPTION" :value="key">[[ key ]]</a-select-option>
-            </a-se-chlect>
+            </a-select>
     </a-form-item>
     <a-form-item label="Max Concurrent Upload">
         <a-input-number v-model="inbound.stream.splithttp.scMaxConcurrentPosts" :min="0"></a-input-number>
@@ -45,8 +45,8 @@
             xPadding Bytes (Byte)
             <a-tooltip>
                 <template slot="title">
-                    设置请求（出站）和响应（入站）的填充大小，用于减少请求指纹。单位byte, 默认为 "100-1000" 每次会在该范围中随机选择一个数字。 也可以是单个数字 "200"/200
-                    设置为 -1 将完全禁用填充
+                    Set the padding size of the request (outbound) and response (inbound) to reduce the request fingerprint.The unit byte, the default is "100-1000", and a number will be randomly selected in this range each time. It can also be a single number "200"/200
+                    Setting to -1 will completely disable padding
                 </template>
                 <a-icon type="question-circle" theme="filled"></a-icon>
             </a-tooltip>
@@ -59,9 +59,9 @@
             Max Connections
             <a-tooltip>
                 <template slot="title">
-                    maxConnections: 默认值为空 为0(即无限) 要打开的最大连接数，连接达到此值前核心会积极打开连接，对每一条流都新建一个连接，直到达到该值。
-                    然后核心会开始复用已经建立的连接。 与 maxConcurrency 冲突。
-                    所有字段类型均为 int/string 均支持固定值 16 或浮动值 "8-32" 的写法
+                    maxConnections: The default value is empty and the maximum number of connections to be opened is 0 (that is, unlimited). Before the connection reaches this value, the core will actively open the connection and create a new connection for each stream until this value is reached.
+                    Then the core will start to reuse the established connection. Conflict with maxConcurrency.
+                    All field types are int/string and support the writing of fixed value 16 or floating value "8-32"
                 </template>
                 <a-icon type="question-circle" theme="filled"></a-icon>
             </a-tooltip>
@@ -74,9 +74,9 @@
             Max Concurrency
             <a-tooltip>
                 <template slot="title">
-                    maxConcurrency: 默认值为空 为0(即无限) 每个连接中复用的流的最大数量，连接中流的数量达到该值后核心会新建更多连接以容纳更多的流，
-                    类似于 mux.cool 的 concurrency. 与 maxConnections 冲突。
-                    所有字段类型均为 int/string 均支持固定值 16 或浮动值 "8-32" 的写法
+                    maxConcurrency: The default value is empty and 0 (that is, unlimited). The maximum number of streams multiplexed in each connection. After the number of streams in the connection reaches this value, the core will create more connections to accommodate more streams.，
+                    Similar to mux.Cool's concurrency. Conflict with maxConnections.
+                    All field types are int/string and support the writing of fixed value 16 or floating value "8-32"
                 </template>
                 <a-icon type="question-circle" theme="filled"></a-icon>
             </a-tooltip>

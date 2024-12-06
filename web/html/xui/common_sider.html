@@ -1,34 +1,34 @@
 {{define "menuItems"}}
 <a-menu-item key="{{ .base_path }}xui/">
     <a-icon type="dashboard"></a-icon>
-    <span>系统状态</span>
+    <span>System status</span>
 </a-menu-item>
 <a-menu-item key="{{ .base_path }}xui/inbounds">
     <a-icon type="user"></a-icon>
-    <span>入站列表</span>
+    <span>Inbound list</span>
 </a-menu-item>
 <a-menu-item key="{{ .base_path }}xui/setting">
     <a-icon type="setting"></a-icon>
-    <span>面板设置</span>
+    <span>Panel settings</span>
 </a-menu-item>
-<!--<a-menu-item key="{{ .base_path }}xui/clients">-->
-<!--    <a-icon type="laptop"></a-icon>-->
-<!--    <span>客户端</span>-->
-<!--</a-menu-item>-->
-<!-- <a-sub-menu>
-    <template slot="title">
-        <a-icon type="link"></a-icon>
-        <span>相关说明</span>
-    </template>
-    <a-menu-item key="https://github.com/qist/xray-ui/blob/main/README.md">
-        <a-icon type="github"></a-icon>
-        <span>教程</span>
-    </a-menu-item> -->
-    
+<a-menu-item key="{{ .base_path }}xui/clients">
+    <a-icon type="laptop"></a-icon>
+    <span>Client</span>
+</a-menu-item>
+<!--&lt;!&ndash; <a-sub-menu>-->
+<template slot="title">
+    <a-icon type="link"></a-icon>
+    <span>Related instructions</span>
+</template>
+<a-menu-item key="https://github.com/qist/xray-ui/blob/main/README.md">
+    <a-icon type="github"></a-icon>
+    <span>Tutorial</span>
+</a-menu-item> -->
+
 </a-sub-menu>
 <a-menu-item key="{{ .base_path }}logout">
     <a-icon type="logout"></a-icon>
-    <span>退出登录</span>
+    <span>Log out</span>
 </a-menu-item>
 {{end}}
 
@@ -47,7 +47,7 @@
         <a-icon :type="siderDrawer.visible ? 'close' : 'menu-fold'"></a-icon>
     </div>
     <a-menu theme="light" mode="inline" :selected-keys="['{{ .request_uri }}']"
-        @click="({key}) => key.startsWith('http') ? window.open(key) : location.href = key">
+            @click="({key}) => key.startsWith('http') ? window.open(key) : location.href = key">
         {{template "menuItems" .}}
     </a-menu>
 </a-drawer>

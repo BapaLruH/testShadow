@@ -35,7 +35,7 @@
                                                     :stroke-color="status.mem.color"
                                                     :percent="status.mem.percent"></a-progress>
                                         <div>
-                                            内存: [[ sizeFormat(status.mem.current) ]] / [[ sizeFormat(status.mem.total) ]]
+                                            memory: [[ sizeFormat(status.mem.current) ]] / [[ sizeFormat(status.mem.total) ]]
                                         </div>
                                     </a-col>
                                 </a-row>
@@ -55,7 +55,7 @@
                                                     :stroke-color="status.disk.color"
                                                     :percent="status.disk.percent"></a-progress>
                                         <div>
-                                            硬盘: [[ sizeFormat(status.disk.current) ]] / [[ sizeFormat(status.disk.total) ]]
+                                            hard disk: [[ sizeFormat(status.disk.current) ]] / [[ sizeFormat(status.disk.total) ]]
                                         </div>
                                     </a-col>
                                 </a-row>
@@ -70,17 +70,17 @@
                         <a-card hoverable>
                             Xray-ui: <a-tag color="green">v{{ .cur_ver }}</a-tag></a>
                             Xray: <a-tag color="green" style="cursor: pointer;" @click="openSelectV2rayVersion">v[[ status.xray.version ]]</a-tag>
-                            github: <a href="https://github.com/qist/xray-ui/blob/main/README.md" target="_blank"><a-tag color="green">教程</a-tag></a>
-                            【geoip geosite】版本: <a-tag  color="green">[[ Version ]]</a-tag></a>
+                            github: <a href="https://github.com/qist/xray-ui/blob/main/README.md" target="_blank"><a-tag color="green">Tutorial</a-tag></a>
+                            【geoip geosite】version: <a-tag  color="green">[[ Version ]]</a-tag></a>
                         </a-card>
                     </a-col>
                     <a-col :sm="24" :md="12">
                         <a-card hoverable>
-                            运行时间:
+                            Running time:
                             <a-tag color="#87d068">[[ formatSecond(status.uptime) ]]</a-tag>
                             <a-tooltip>
                                 <template slot="title">
-                                    系统自启动以来的运行时间
+                                    The running time of the system since startup
                                 </template>
                                 <a-icon type="question-circle" theme="filled"></a-icon>
                             </a-tooltip>
@@ -88,7 +88,7 @@
                     </a-col>
                     <a-col :sm="24" :md="12">
                         <a-card hoverable>
-                            Xray 状态:
+                            Xray status:
                             <a-tag :color="status.xray.color">[[ status.xray.state ]]</a-tag>
                             <a-tooltip v-if="status.xray.state === State.Error">
                                 <template slot="title">
@@ -97,31 +97,31 @@
                                 <a-icon type="question-circle" theme="filled"></a-icon>
                             </a-tooltip>
                             <a-tag color="green" @click="openSelectV2rayVersion">[[ status.xray.version ]]</a-tag>
-                            <a-tag color="blue" @click="openSelectV2rayVersion">Xray版本切换</a-tag>
-                            <a-tag color="blue" @click="AllIPUpdate">更新【geoip geosite】</a-tag>
-                            <a-tag color="blue" style="cursor: pointer;" @click="stopXrayService">停止</a-tag>
-                            <a-tag color="blue" style="cursor: pointer;" @click="restartXrayService">重启</a-tag>   
+                            <a-tag color="blue" @click="openSelectV2rayVersion">Xray version switch</a-tag>
+                            <a-tag color="blue" @click="AllIPUpdate">Update【geoip geosite】</a-tag>
+                            <a-tag color="blue" style="cursor: pointer;" @click="stopXrayService">Stop</a-tag>
+                            <a-tag color="blue" style="cursor: pointer;" @click="restartXrayService">Restart</a-tag>
                         </a-card>
                     </a-col>
                     <a-col :sm="24" :md="12">
                         <a-card hoverable>
-                            其他:
-                            <a-tag color="blue" style="cursor: pointer;" @click="openConfig">配置文件下载</a-tag>
-                            <a-tag color="blue" style="cursor: pointer;" @click="openBackup">备份还原</a-tag>
-                            <a-tag  color="red">默认CN IP 网址 为 blocked、修改请到《面板配置》下面的《xray 相关设置》进行配置 </a-tag></a>
+                            Other:
+                            <a-tag color="blue" style="cursor: pointer;" @click="openConfig">Open config</a-tag>
+                            <a-tag color="blue" style="cursor: pointer;" @click="openBackup">Open backup</a-tag>
+                            <a-tag  color="red">The default CN IP url is blocked. For modification, please go to "xray Related Settings" under "Panel Configuration" to configure</a-tag></a>
                         </a-card>
                     </a-col>
                     <a-col :sm="24" :md="12">
                         <a-card hoverable>
-                            系统负载: [[ status.loads[0] ]] | [[ status.loads[1] ]] | [[ status.loads[2] ]]
+                            System load: [[ status.loads[0] ]] | [[ status.loads[1] ]] | [[ status.loads[2] ]]
                         </a-card>
                     </a-col>
                     <a-col :sm="24" :md="12">
                         <a-card hoverable>
-                            tcp / udp 连接数: [[ status.tcpCount ]] / [[ status.udpCount ]]
+                            tcp / udp Number of connections: [[ status.tcpCount ]] / [[ status.udpCount ]]
                             <a-tooltip>
                                 <template slot="title">
-                                    所有网卡的总连接数
+                                    The total number of connections of all network cards
                                 </template>
                                 <a-icon type="question-circle" theme="filled"></a-icon>
                             </a-tooltip>
@@ -135,7 +135,7 @@
                                     [[ sizeFormat(status.netIO.up) ]] / S
                                     <a-tooltip>
                                         <template slot="title">
-                                            所有网卡的总上传速度
+                                            Total upload speed of all network cards
                                         </template>
                                         <a-icon type="question-circle" theme="filled"></a-icon>
                                     </a-tooltip>
@@ -145,7 +145,7 @@
                                     [[ sizeFormat(status.netIO.down) ]] / S
                                     <a-tooltip>
                                         <template slot="title">
-                                            所有网卡的总下载速度
+                                            Total download speed of all network cards
                                         </template>
                                         <a-icon type="question-circle" theme="filled"></a-icon>
                                     </a-tooltip>
@@ -161,7 +161,7 @@
                                     [[ sizeFormat(status.netTraffic.sent) ]]
                                     <a-tooltip>
                                         <template slot="title">
-                                            系统启动以来所有网卡的总上传流量
+                                            The total upload traffic of all network cards since the system started
                                         </template>
                                         <a-icon type="question-circle" theme="filled"></a-icon>
                                     </a-tooltip>
@@ -171,7 +171,7 @@
                                     [[ sizeFormat(status.netTraffic.recv) ]]
                                     <a-tooltip>
                                         <template slot="title">
-                                            系统启动以来所有网卡的总下载流量
+                                            The total download traffic of all network cards since the system started
                                         </template>
                                         <a-icon type="question-circle" theme="filled"></a-icon>
                                     </a-tooltip>
@@ -183,11 +183,11 @@
             </transition>
         </a-layout-content>
     </a-layout>
-    <a-modal id="version-modal" v-model="versionModal.visible" title="Xray版本切换"
+    <a-modal id="version-modal" v-model="versionModal.visible" title="Xray version switch"
              :closable="true" @ok="() => versionModal.visible = false"
-             ok-text="确定" cancel-text="取消">
-        <h2>点击你想切换的版本</h2>
-        <h2>请谨慎选择，旧版本可能配置不兼容</h2>
+             ok-text="Ok" cancel-text="Cancel">
+        <h2>Click the version you want to switch</h2>
+        <h2>Please choose carefully, the old version may be incompatible with the configuration</h2>
         <template v-for="version, index in versionModal.versions">
             <a-tag :color="index % 2 == 0 ? 'blue' : 'green'"
                    style="margin: 10px" @click="switchV2rayVersion(version)">
@@ -195,10 +195,10 @@
             </a-tag>
         </template>
     </a-modal>
-    <a-modal id="version-modal" v-model="versionModal.allip" title="更新【geoip geosite】"
+    <a-modal id="version-modal" v-model="versionModal.allip" title="Update【geoip geosite】"
              :closable="true" @ok="() => versionModal.allip = false"
-             ok-text="确定" cancel-text="取消">
-        <h2>点击你想更新的版本</h2>
+             ok-text="Ok" cancel-text="Cancel">
+        <h2>Click on the version you want to update</h2>
         <!-- <h2>请谨慎选择，旧版本可能配置不兼容</h2> -->
         <template v-for="version, index in versionModal.allips">
             <a-tag :color="index % 2 == 0 ? 'blue' : 'green'"
@@ -336,10 +336,10 @@
         exportText: '',
         importText: '',
         show({
-            title = '备份和恢复数据库',
-            description = '请记住在导入新数据库之前进行备份。',
-            exportText = '下载数据库',
-            importText = '上传数据库',
+            title = 'Backup and restore the database',
+            description = 'Remember to make a backup before importing a new database.。',
+            exportText = 'Export db',
+            importText = 'Import db',
         }) {
             this.title = title;
             this.description = description;
@@ -361,12 +361,12 @@
             versionModal,
             backupModal,
             spinning: false,
-            loadingTip: '加载中',
+            loadingTip: 'Loading',
             Version: "",
 
         },
         methods: {
-            loading(spinning, tip = '加载中') {
+            loading(spinning, tip = 'Loading') {
                 this.spinning = spinning;
                 this.loadingTip = tip;
             },
@@ -402,14 +402,14 @@
         },
             switchV2rayVersion(version) {
                 this.$confirm({
-                    title: '切换 xray 版本',
-                    content: '是否切换 xray 版本至' + ` ${version}?`,
-                    okText: '确定',
+                    title: 'Switch xray version',
+                    content: 'Whether to switch the xray version to' + ` ${version}?`,
+                    okText: 'Ok',
                     class: themeSwitcher.darkCardClass,
-                    cancelText: '取消',
+                    cancelText: 'Cancel',
                     onOk: async () => {
                         versionModal.hide();
-                        this.loading(true, '安装中，请不要刷新此页面');
+                        this.loading(true, 'During installation, please do not refresh this page');
                         await HttpUtil.post(`/server/installXray/${version}`);
                         this.loading(false);
                     },
@@ -417,14 +417,14 @@
             },
             AllIPUpdateVersion(version){
             this.$confirm({
-                title: '切换 geoip,geosite 版本',
-                content: '是否切换 geoip,geosite 版本至' + ` ${version}?`,
-                okText: '确定',
+                title: 'Switch geoip,geosite version',
+                content: 'Whether to switch geoip, geosite version to' + ` ${version}?`,
+                okText: 'Ok',
                 class: themeSwitcher.darkCardClass,
-                cancelText: '取消',
+                cancelText: 'Cancel',
                 onOk: async () => {
                     versionModal.hide();
-                    this.loading(true, '安装中，请不要刷新此页面');
+                    this.loading(true, 'During installation, please do not refresh this page');
                     const urls = [`/server/installGeosite/${version}`, `/server/installGeoip/${version}`];
                     await Promise.all(urls.map(url => HttpUtil.post(url)));
                     const msg = await HttpUtil.post(`/server/getVersion/${version}`)
@@ -471,10 +471,10 @@
             },
             openBackup() {
                 backupModal.show({
-                    title: '备份和恢复数据库',
-                    description: '请记住在导入新数据库之前进行备份。',
-                    exportText: '下载数据库',
-                    importText: '上传数据库',
+                    title: 'Backup and restore the database',
+                    description: 'Remember to make a backup before importing a new database.',
+                    exportText: 'Export db',
+                    importText: 'Import db',
                 });
             },
             exportDatabase(){

@@ -9,7 +9,7 @@
     <a-form-item label='host'>
         <a-input v-model.trim="inbound.stream.httpupgrade.host"></a-input>
     </a-form-item>
-    <a-form-item label="请求头">
+    <a-form-item label="Request header">
         <a-row>
             <a-button size="small"
                       @click="inbound.stream.httpupgrade.addHeader('Host', '')">
@@ -18,9 +18,9 @@
         </a-row>
         <a-input-group v-for="(header, index) in inbound.stream.httpupgrade.headers">
             <a-input style="width: 50%" v-model.trim="header.name"
-                     addon-before="名称"></a-input>
+                     addon-before="Name"></a-input>
             <a-input style="width: 50%" v-model.trim="header.value"
-                     addon-before="值">
+                     addon-before="Value">
                 <template slot="addonAfter">
                     <a-button size="small"
                               @click="inbound.stream.httpupgrade.removeHeader(index)">
