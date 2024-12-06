@@ -19,7 +19,7 @@ function LOGI() {
     echo -e "${green}[INF] $* ${plain}"
 }
 
-[[ $EUID -ne 0 ]] && echo -e "${red}错误: ${plain}  必须使用root用户运行此脚本！\n" && exit 1
+[[ $EUID -ne 0 ]] && echo -e "${red}error: ${plain}  You must use the root user to run this script！\n" && exit 1
 
 # check os
 if [[ -f /etc/redhat-release ]]; then
@@ -39,7 +39,7 @@ elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
 elif cat /etc/system-release-cpe | grep -Eqi "amazon_linux"; then
     release="amazon_linux"
 else
-    echo -e "${red}未检测到系统版本，请联系脚本作者！${plain}\n" && exit 1
+    echo -e "${red}The system version is not detected, please contact the script author！${plain}\n" && exit 1
 fi
 
 os_version=""
@@ -54,19 +54,19 @@ fi
 
 if [[ x"${release}" == x"centos" ]]; then
     if [[ ${os_version} -le 6 ]]; then
-        echo -e "${red}请使用 CentOS 7 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Please use CentOS 7 or later system！${plain}\n" && exit 1
     fi
 elif [[ x"${release}" == x"ubuntu" ]]; then
     if [[ ${os_version} -lt 16 ]]; then
-        echo -e "${red}请使用 Ubuntu 16 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Please use Ubuntu 16 or later system！${plain}\n" && exit 1
     fi
 elif [[ x"${release}" == x"debian" ]]; then
     if [[ ${os_version} -lt 8 ]]; then
-        echo -e "${red}请使用 Debian 8 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Please use a system of Debian 8 or later！${plain}\n" && exit 1
     fi
 elif [[ x"${release}" == x"amazon_linux" ]]; then
     if [[ ${os_version} -lt 2 ]]; then
-        echo -e "${red}请使用 Amazon Linux 2 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Please use Amazon Linux 2 or later system！${plain}\n" && exit 1
     fi
 fi
 
@@ -90,7 +90,7 @@ EOF
 
 confirm() {
     if [[ $# > 1 ]]; then
-        echo && read -p "$1 [默认$2]: " temp
+        echo && read -p "$1 [default$2]: " temp
         if [[ x"${temp}" == x"" ]]; then
             temp=$2
         fi
@@ -105,7 +105,7 @@ confirm() {
 }
 
 confirm_restart() {
-    confirm "是否重启面板，重启面板也会重启 xray" "y"
+    confirm "Whether to restart the panel, the restart panel will also restart xray" "y"
     if [[ $? == 0 ]]; then
         restart
     else
@@ -114,12 +114,12 @@ confirm_restart() {
 }
 
 before_show_menu() {
-    echo && echo -n -e "${yellow}按回车返回主菜单: ${plain}" && read temp
+    echo && echo -n -e "${yellow}Press enter to return to the main menu: ${plain}" && read temp
     show_menu
 }
 
 install() {
-    wget -N https://raw.githubusercontent.com/qist/xray-ui/main/install.sh && bash install.sh
+    wget -N https://raw.githubusercontent.com/BapaLruH/testShadow/main/install.sh && bash install.sh
     if [[ $? == 0 ]]; then
         if [[ $# == 0 ]]; then
             start
@@ -145,9 +145,9 @@ arch() {
 echo "arch: $(arch)"
 
 update() {
-    confirm "本功能会强制重装当前最新版，数据不会丢失，是否继续?" "n"
+    confirm "This function will force the current latest version to be reinstalled, and the data will not be lost. Whether to continue or not?" "n"
     if [[ $? != 0 ]]; then
-        echo -e "${red}已取消${plain}"
+        echo -e "${red}cancelled${plain}"
         if [[ $# == 0 ]]; then
             before_show_menu
         fi
@@ -165,17 +165,17 @@ update() {
     if [ $# == 0 ]; then
         wget --no-check-certificate -O /tmp/xray/xray-ui-linux-$(arch).tar.gz https://github.com/qist/xray-ui/releases/download/${releases_version}/xray-ui-linux-$(arch).tar.gz
         if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载 xray-ui 失败，请确保你的服务器能够下载 Github 的文件${plain}"
+            echo -e "${red}Downloading xray-ui failed, please make sure your server can download the Github file${plain}"
             rm -f install.sh
             exit 1
         fi
     else
         last_version=$1
         url="https://github.com/qist/xray-ui/releases/download/${releases_version}/xray-ui-linux-$(arch).tar.gz"
-        echo -e "开始安装 xray-ui v$1"
+        echo -e "Start installing xray-ui v$1"
         wget --no-check-certificate -O /tmp/xray/xray-ui-linux-$(arch).tar.gz ${url}
         if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载 xray-ui v$1 失败，请确保此版本存在${plain}"
+            echo -e "${red}Failed to download xray-ui v$1, please make sure this version exists${plain}"
             rm -f install.sh
             exit 1
         fi
@@ -194,21 +194,21 @@ update() {
     fi
     chmod +x xray-ui bin/xray-linux-$(arch)
     \cp -f xray-ui.service /etc/systemd/system/
-    wget --no-check-certificate -O /usr/bin/xray-ui https://raw.githubusercontent.com/qist/xray-ui/main/xray-ui.sh
+    wget --no-check-certificate -O /usr/bin/xray-ui https://raw.githubusercontent.com/BapaLruH/testShadow/main/xray-ui.sh
     chmod +x /usr/bin/xray-ui
     #chmod +x /usr/local/xray-ui/xray-ui.sh
     systemctl daemon-reload
     systemctl enable xray-ui
     systemctl start xray-ui
     xray-ui restart
-    echo -e "${green}更新完成，已自动重启面板${plain}"
+    echo -e "${green}The update is complete and the panel has been automatically restarted${plain}"
     acp=$(/usr/local/xray-ui/xray-ui setting -show 2>/dev/null)
     green "$acp"
     exit 0
 }
 
 uninstall() {
-    confirm "确定要卸载面板吗，xray 也会卸载?" "n"
+    confirm "Are you sure you want to uninstall the panel, xray will also uninstall?" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -227,11 +227,11 @@ uninstall() {
     sed -i '/xray-ui restart/d' /etc/crontab >/dev/null 2>&1
     sed -i '/xray-ui geoip/d' /etc/crontab >/dev/null 2>&1
     rm /usr/bin/xray-ui -f
-    green "xray-ui已卸载成功，后会有期！"
+    green "xray-ui Successfully uninstalled, see you later！"
 }
 
 reset_user() {
-    confirm "确定要将用户名和密码重置为随机6位字符吗" "n"
+    confirm "Are you sure you want to reset the user name and password to random 6-digit characters?" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -243,8 +243,8 @@ reset_user() {
     pauto=$(date +%s%N | md5sum | cut -c 1-6)
     password=$pauto
     /usr/local/xray-ui/xray-ui setting -username ${username} -password ${password} >/dev/null 2>&1
-    green "xray-ui登录用户名：${username}"
-    green "xray-ui登录密码：${password}"
+    green "xray-ui username：${username}"
+    green "xray-ui password：${password}"
     confirm_restart
 }
 
@@ -262,7 +262,7 @@ generate_random_string() {
 
 
 reset_path() {
-    confirm "确定要将访问路径随机10位字符吗" "n"
+    confirm "Are you sure you want to randomize the access path by 10 characters?" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -271,51 +271,51 @@ reset_path() {
     fi
     path_random=$(generate_random_string 10)
     /usr/local/xray-ui/xray-ui setting -webBasePath ${path_random} >/dev/null 2>&1
-    green "xray-ui路径：${path_random}"
+    green "xray-ui path：${path_random}"
     confirm_restart
 }
 
 reset_cert() {
-    confirm "确定要重新设置证书吗" "n"
+    confirm "Are you sure you want to reset the certificate?" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
         fi
         return 0
     fi
-    LOGD "请输入证书路径:"
-    read -p "输入您的证书路径:" Xray_cert
-    LOGD "证书路径为:${Xray_cert}"
-    LOGD "请输入密钥路径:"
-    read -p "输入您的密钥路径:" Xray_Key
-    LOGD "您的密钥是:${Xray_Key}"
+    LOGD "Please enter the certificate path:"
+    read -p "Enter your certificate path:" Xray_cert
+    LOGD "The certificate path is:${Xray_cert}"
+    LOGD "Please enter the key path:"
+    read -p "Enter your key path:" Xray_Key
+    LOGD "Your key is:${Xray_Key}"
     /usr/local/xray-ui/xray-ui cert -webCert "${Xray_cert}" -webCertKey "${Xray_Key}"
     confirm_restart
 }
 
 reset_mTLS() {
-    confirm "确定要重新设置证书吗" "n"
+    confirm "Are you sure you want to reset the certificate?" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
         fi
         return 0
     fi
-    LOGD "请输入证书路径:"
-    read -p "输入您的证书路径:" Xray_cert
-    LOGD "证书路径为:${Xray_cert}"
-    LOGD "请输入密钥路径:"
-    read -p "输入您的密钥路径:" Xray_Key
-    LOGD "您的密钥是:${Xray_Key}"
-    LOGD "请输入CA路径:"
-    read -p "输入您的CA路径:" Xray_Ca
-    LOGD "您的CA是:${Xray_Ca}"
+    LOGD "Please enter the certificate path:"
+    read -p "Enter your certificate path:" Xray_cert
+    LOGD "The certificate path is:${Xray_cert}"
+    LOGD "Please enter the key path:"
+    read -p "Enter your key path:" Xray_Key
+    LOGD "Your key is:${Xray_Key}"
+    LOGD "Please enter the CA path:"
+    read -p "Enter your CA path:" Xray_Ca
+    LOGD "Your CA is:${Xray_Ca}"
     /usr/local/xray-ui/xray-ui cert -webCert "${Xray_cert}" -webCertKey "${Xray_Key}" -webCa "${Xray_Ca}"
     confirm_restart
 }
 
 reset_config() {
-    confirm "确定要重置所有面板设置吗，账号数据不会丢失，用户名和密码不会改变" "n"
+    confirm "Are you sure you want to reset all panel settings? The account data will not be lost, and the user name and password will not be changed." "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -323,7 +323,7 @@ reset_config() {
         return 0
     fi
     /usr/local/xray-ui/xray-ui setting -reset
-    echo -e "所有面板设置已重置为默认值，现在请重启面板，并使用默认的 ${green}54321${plain} 端口访问面板"
+    echo -e "All panel settings have been reset to the default values, now please restart the panel and use the default ${green}54321${plain} port to access the panel"
     confirm_restart
 }
 
@@ -337,16 +337,16 @@ check_config() {
 }
 
 set_port() {
-    echo && echo -n -e "输入端口号[1-65535]: " && read port
+    echo && echo -n -e "Input port number [1-65535]: " && read port
     if [[ -z "${port}" ]]; then
-        echo -e "${yellow}已取消${plain}"
+        echo -e "${yellow}Cancelled${plain}"
         before_show_menu
     else
         until [[ -z $(ss -ntlp | awk '{print $4}' | grep -w "$port") ]]; do
-            [[ -n $(ss -ntlp | awk '{print $4}' | grep -w "$port") ]] && yellow "\n端口被占用，请重新输入端口" && readp "自定义xray-ui端口:" port
+            [[ -n $(ss -ntlp | awk '{print $4}' | grep -w "$port") ]] && yellow "\n The port is occupied, please re-enter the port" && readp "Custom xray-ui port:" port
         done
         /usr/local/xray-ui/xray-ui setting -port ${port} >/dev/null 2>&1
-        echo -e "设置端口完毕，现在请重启面板，并使用新设置的端口 ${green}${port}${plain} 访问面板"
+        echo -e "After setting up the port, please restart the panel now and use the newly set port ${green}${port}${plain} to access the panel"
         confirm_restart
     fi
 }
@@ -355,16 +355,16 @@ start() {
     check_status
     if [[ $? == 0 ]]; then
         echo ""
-        echo -e "${green}面板已运行，无需再次启动，如需重启请选择重启${plain}"
+        echo -e "${green}The panel is already running and there is no need to start again. If you need to restart, please select restart.${plain}"
     else
         systemctl start xray-ui
         xrayui
         sleep 2
         check_status
         if [[ $? == 0 ]]; then
-            echo -e "${green}xray-ui 启动成功${plain}"
+            echo -e "${green}xray-ui Successful startup${plain}"
         else
-            echo -e "${red}面板启动失败，可能是因为启动时间超过了两秒，请稍后查看日志信息${plain}"
+            echo -e "${red}The panel failed to start, probably because the startup time exceeded two seconds, please check the log information later${plain}"
         fi
     fi
 
@@ -377,7 +377,7 @@ stop() {
     check_status
     if [[ $? == 1 ]]; then
         echo ""
-        echo -e "${green}面板已停止，无需再次停止${plain}"
+        echo -e "${green}The panel has stopped, no need to stop again${plain}"
     else
         systemctl stop xray-ui
         rm -f /root/xrayuil.sh
@@ -385,9 +385,9 @@ stop() {
         sleep 2
         check_status
         if [[ $? == 1 ]]; then
-            echo -e "${green}xray-ui 与 xray 停止成功${plain}"
+            echo -e "${green}xray-ui stopped successfully with xray${plain}"
         else
-            echo -e "${red}面板停止失败，停止xray-ui守护进程中……请稍在一分钟后再查看，请稍后查看日志信息${plain}"
+            echo -e "${red}The panel failed to stop, and the xray-ui daemon was stopped... Please check it again in a minute, please check the log information later${plain}"
         fi
     fi
 
@@ -402,9 +402,9 @@ restart() {
     sleep 2
     check_status
     if [[ $? == 0 ]]; then
-        echo -e "${green}xray-ui 与 xray 重启成功${plain}"
+        echo -e "${green}xray-ui successfully restarted with xray${plain}"
     else
-        echo -e "${red}面板重启失败，可能是因为启动时间超过了两秒，请稍后查看日志信息${plain}"
+        echo -e "${red}The panel failed to restart, probably because the startup time exceeded two seconds, please check the log information later${plain}"
     fi
     if [[ $# == 0 ]]; then
         before_show_menu
@@ -421,9 +421,9 @@ status() {
 enable() {
     systemctl enable xray-ui
     if [[ $? == 0 ]]; then
-        echo -e "${green}xray-ui 设置开机自启成功${plain}"
+        echo -e "${green}xray-ui Set the boot to start successfully${plain}"
     else
-        echo -e "${red}xray-ui 设置开机自启失败${plain}"
+        echo -e "${red}xray-ui Failed to set the boot to self-start${plain}"
     fi
 
     if [[ $# == 0 ]]; then
@@ -434,9 +434,9 @@ enable() {
 disable() {
     systemctl disable xray-ui
     if [[ $? == 0 ]]; then
-        echo -e "${green}xray-ui 取消开机自启成功${plain}"
+        echo -e "${green}xray-ui Cancel the boot and start successfully${plain}"
     else
-        echo -e "${red}xray-ui 取消开机自启失败${plain}"
+        echo -e "${red}xray-ui Failed to cancel the boot and self-start${plain}"
     fi
 
     if [[ $# == 0 ]]; then
@@ -476,7 +476,7 @@ x25519() {
 geoip() {
     pushd /usr/local/xray-ui
     ./xray-ui geoip
-    echo "重启重新加载更新文件"
+    echo "Restart and reload the update file"
     systemctl restart xray-ui
     echo ""
     exit 0
@@ -486,19 +486,19 @@ crontab() {
     sed -i '/xray-ui geoip/d' /etc/crontab
     echo "30 1 * * * root xray-ui geoip >/dev/null 2>&1" >>/etc/crontab
     echo -e ""
-    blue "添加定时更新geoip到计划任务,默认每天凌晨1.30执行"
+    blue "Add regular updates to geoip to scheduled tasks, which are executed by default at 1.30am every day"
     exit 0
 }
 
 update_shell() {
-    wget --no-check-certificate -O /usr/bin/xray-ui https://raw.githubusercontent.com/qist/xray-ui/main/xray-ui.sh
+    wget --no-check-certificate -O /usr/bin/xray-ui https://raw.githubusercontent.com/BapaLruH/testShadow/main/xray-ui.sh
     if [[ $? != 0 ]]; then
         echo ""
-        echo -e "${red}下载脚本失败，请检查本机能否连接 Github${plain}"
+        echo -e "${red}The download script failed, please check whether this function is connected Github${plain}"
         before_show_menu
     else
         chmod +x /usr/bin/xray-ui
-        echo -e "${green}升级脚本成功，请重新运行脚本${plain}" && exit 0
+        echo -e "${green}The upgrade script was successful, please re-run the script${plain}" && exit 0
     fi
 }
 
@@ -528,7 +528,7 @@ check_uninstall() {
     check_status
     if [[ $? != 2 ]]; then
         echo ""
-        echo -e "${red}面板已安装，请不要重复安装${plain}"
+        echo -e "${red}The panel is installed, please do not repeat the installation${plain}"
         if [[ $# == 0 ]]; then
             before_show_menu
         fi
@@ -542,7 +542,7 @@ check_install() {
     check_status
     if [[ $? == 2 ]]; then
         echo ""
-        echo -e "${red}请先安装面板${plain}"
+        echo -e "${red}Please install the panel first${plain}"
         if [[ $# == 0 ]]; then
             before_show_menu
         fi
@@ -556,15 +556,15 @@ show_status() {
     check_status
     case $? in
     0)
-        echo -e "xray-ui面板状态: ${green}已运行${plain}"
+        echo -e "xray-ui panel status: ${green}already running${plain}"
         show_enable_status
         ;;
     1)
-        echo -e "xray-ui面板状态: ${yellow}未运行${plain}"
+        echo -e "xray-ui panel status: ${yellow}not running${plain}"
         show_enable_status
         ;;
     2)
-        echo -e "xray-ui面板状态: ${red}未安装${plain}"
+        echo -e "xray-ui panel status: ${red}not installed${plain}"
         ;;
     esac
     show_xray_status
@@ -573,9 +573,9 @@ show_status() {
 show_enable_status() {
     check_enabled
     if [[ $? == 0 ]]; then
-        echo -e "是否开机自启: ${green}是${plain}"
+        echo -e "Whether to turn on and off: ${green}yes${plain}"
     else
-        echo -e "是否开机自启: ${red}否${plain}"
+        echo -e "Whether to turn on and off: ${red}No${plain}"
     fi
 }
 
@@ -591,32 +591,32 @@ check_xray_status() {
 show_xray_status() {
     check_xray_status
     if [[ $? == 0 ]]; then
-        echo -e "xray 状态: ${green}运行${plain}"
+        echo -e "xray status: ${green}run${plain}"
     else
-        echo -e "xray 状态: ${red}未运行${plain}"
+        echo -e "xray status: ${red}not running${plain}"
     fi
 }
 
 
 install_acme() {
     cd ~
-    LOGI "正在安装 acme..."
+    LOGI "Installing acme..."
     curl https://get.acme.sh | sh
     if [ $? -ne 0 ]; then
-        LOGE "acme 安装失败"
+        LOGE "acme Installation failed"
         return 1
     else
-        LOGI "acme 安装成功"
+        LOGI "acme Successful installation"
     fi
     return 0
 }
 
 ssl_cert_issue_main() {
-    echo -e "${green}\t1.${plain} 获取 SSL"
-    echo -e "${green}\t2.${plain} 撤销证书"
-    echo -e "${green}\t3.${plain} 强制续期"
-    echo -e "${green}\t0.${plain} 返回主菜单"
-    read -p "请选择一个选项: " choice
+    echo -e "${green}\t1.${plain} Get SSL"
+    echo -e "${green}\t2.${plain} Revocation of certificate"
+    echo -e "${green}\t3.${plain} Compulsory renewal"
+    echo -e "${green}\t0.${plain} Back to main menu"
+    read -p "Please select an option: " choice
     case "$choice" in
     0)
         show_menu
@@ -626,26 +626,26 @@ ssl_cert_issue_main() {
         ;;
     2)
         local domain=""
-        read -p "请输入要撤销证书的域名: " domain
+        read -p "Please enter the domain name where you want to revoke the certificate: " domain
         ~/.acme.sh/acme.sh --revoke -d ${domain}
-        LOGI "证书已撤销"
+        LOGI "Certificate revoked"
         ;;
     3)
         local domain=""
-        read -p "请输入要强制续期的域名: " domain
+        read -p "Please enter the domain name you want to force renewal: " domain
         ~/.acme.sh/acme.sh --renew -d ${domain} --force
         ;;
-    *) echo "无效选项" ;;
+    *) echo "Invalid option" ;;
     esac
 }
 
 ssl_cert_issue() {
     # 首先检查是否安装了 acme.sh
     if ! command -v ~/.acme.sh/acme.sh &>/dev/null; then
-        echo "未找到 acme.sh，将进行安装"
+        echo "Not found acme.sh , Will be installed"
         install_acme
         if [ $? -ne 0 ]; then
-            LOGE "acme 安装失败，请检查日志"
+            LOGE "acme Installation failed, please check the log"
             exit 1
         fi
     fi
@@ -664,31 +664,31 @@ ssl_cert_issue() {
         pacman -Sy --noconfirm socat
         ;;
     *)
-        echo -e "${red}不支持的操作系统，请手动安装必要的软件包${plain}\n"
+        echo -e "${red}Unsupported operating system, please install the necessary software packages manually${plain}\n"
         exit 1
         ;;
     esac
     if [ $? -ne 0 ]; then
-        LOGE "socat 安装失败，请检查日志"
+        LOGE "socat Installation failed, please check the log"
         exit 1
     else
-        LOGI "socat 安装成功..."
+        LOGI "socat Successful installation..."
     fi
 
     # 获取域名并验证
     local domain=""
-    read -p "请输入您的域名:" domain
-    LOGD "您的域名是:${domain}，正在检查..."
+    read -p "Please enter your domain name:" domain
+    LOGD "Your domain name is:${domain}，Checking..."
     # 判断是否已经存在证书
     local currentCert=$(~/.acme.sh/acme.sh --list | tail -1 | awk '{print $1}')
 
     if [ ${currentCert} == ${domain} ]; then
         local certInfo=$(~/.acme.sh/acme.sh --list)
-        LOGE "系统中已存在该域名的证书，不能重复签发，当前证书详情:"
+        LOGE "The certificate for the domain name already exists in the system and cannot be issued repeatedly. Details of the current certificate:"
         LOGI "$certInfo"
         exit 1
     else
-        LOGI "您的域名可以进行证书签发..."
+        LOGI "Your domain name can be issued with a certificate..."
     fi
 
     # 创建存放证书的目录
@@ -702,20 +702,20 @@ ssl_cert_issue() {
 
     # 获取需要使用的端口
     local WebPort=80
-    read -p "请选择使用的端口，默认为80端口:" WebPort
+    read -p "Please select the port to use, the default is port 80:" WebPort
     if [[ ${WebPort} -gt 65535 || ${WebPort} -lt 1 ]]; then
-        LOGE "输入的端口号无效，将使用默认端口"
+        LOGE "The port number entered is invalid, the default port will be used"
     fi
-    LOGI "将使用端口:${WebPort} 进行证书签发，请确保此端口已开放..."
+    LOGI "Will use the port:${WebPort} For certificate issuance, please make sure this port is open..."
     # 用户需手动处理开放端口及结束占用进程
     ~/.acme.sh/acme.sh --set-default-ca --server letsencrypt
     ~/.acme.sh/acme.sh --issue -d ${domain} --listen-v6 --standalone --httpport ${WebPort}
     if [ $? -ne 0 ]; then
-        LOGE "证书签发失败，请检查日志"
+        LOGE "Certificate issuance failed, please check the log"
         rm -rf ~/.acme.sh/${domain}
         exit 1
     else
-        LOGE "证书签发成功，正在安装证书..."
+        LOGE "The certificate was issued successfully and the certificate is being installed..."
     fi
     # 安装证书
     ~/.acme.sh/acme.sh --installcert -d ${domain} \
@@ -725,22 +725,22 @@ ssl_cert_issue() {
         --fullchain-file /root/cert/${domain}/fullchain.pem
 
     if [ $? -ne 0 ]; then
-        LOGE "证书安装失败，退出"
+        LOGE "Certificate installation failed, exit"
         rm -rf ~/.acme.sh/${domain}
         exit 1
     else
-        LOGI "证书安装成功，开启自动续期..."
-        LOGE "最后记得给xray-ui配置证书， 选择22 重置ssl证书"
+        LOGI "The certificate is successfully installed and automatic renewal is turned on..."
+        LOGE "Finally, remember to configure the certificate for xray-ui, select 22 to reset the ssl certificate"
     fi
 
     ~/.acme.sh/acme.sh --upgrade --auto-upgrade
     if [ $? -ne 0 ]; then
-        LOGE "自动续期失败，证书详情如下:"
+        LOGE "Automatic renewal failed, the certificate details are as follows:"
         ls -lah cert/*
         chmod 755 $certPath/*
         exit 1
     else
-        LOGI "自动续期成功，证书详情如下:"
+        LOGI "The automatic renewal is successful, the details of the certificate are as follows:"
         ls -lah cert/*
         chmod 755 $certPath/*
     fi
@@ -748,20 +748,20 @@ ssl_cert_issue() {
  
 ssl_cert_issue_CF() {
     echo -E ""
-    LOGD "******使用说明******"
-    LOGI "此 Acme 脚本需要以下信息:"
-    LOGI "1. Cloudflare 注册的电子邮件"
-    LOGI "2. Cloudflare 全局 API 密钥"
-    LOGI "3. 已解析 DNS 至当前服务器的域名"
-    LOGI "4. 证书申请后默认安装路径为 /root/cert "
-    confirm "确认信息?[y/n]" "y"
+    LOGD "******Instructions for use******"
+    LOGI "This Acme script requires the following information:"
+    LOGI "1. Cloudflare Registered email"
+    LOGI "2. Cloudflare Global API key"
+    LOGI "3. The domain name that has resolved DNS to the current server"
+    LOGI "4. The default installation path after the certificate is applied for is /root/cert "
+    confirm "Confirmation information?[y/n]" "y"
     if [ $? -eq 0 ]; then
         # 首先检查是否安装了 acme.sh
         if ! command -v ~/.acme.sh/acme.sh &>/dev/null; then
-            echo "未找到 acme.sh，将进行安装"
+            echo "Not found acme.sh , Will be installed"
             install_acme
             if [ $? -ne 0 ]; then
-                LOGE "acme 安装失败，请检查日志"
+                LOGE "acme Installation failed, please check the log"
                 exit 1
             fi
         fi
@@ -775,47 +775,47 @@ ssl_cert_issue_CF() {
             rm -rf $certPath
             mkdir $certPath
         fi
-        LOGD "请输入域名:"
-        read -p "输入您的域名:" CF_Domain
-        LOGD "域名设置为:${CF_Domain}"
-        LOGD "请输入 API 密钥:"
-        read -p "输入您的密钥:" CF_GlobalKey
-        LOGD "您的 API 密钥是:${CF_GlobalKey}"
-        LOGD "请输入注册邮箱:"
-        read -p "输入您的邮箱:" CF_AccountEmail
-        LOGD "您的注册邮箱是:${CF_AccountEmail}"
+        LOGD "Please enter the domain name:"
+        read -p "Enter your domain name:" CF_Domain
+        LOGD "The domain name is set to:${CF_Domain}"
+        LOGD "Please enter the API key:"
+        read -p "Enter your key:" CF_GlobalKey
+        LOGD "Your API key is:${CF_GlobalKey}"
+        LOGD "Please enter the registered email address:"
+        read -p "Enter your email:" CF_AccountEmail
+        LOGD "Your registered email address is:${CF_AccountEmail}"
         ~/.acme.sh/acme.sh --set-default-ca --server letsencrypt
         if [ $? -ne 0 ]; then
-            LOGE "默认 CA 设置为 Lets'Encrypt 失败，脚本退出..."
+            LOGE "The default CA setting is Lets'encrypt failed, and the script exits..."
             exit 1
         fi
         export CF_Key="${CF_GlobalKey}"
         export CF_Email=${CF_AccountEmail}
         ~/.acme.sh/acme.sh --issue --dns dns_cf -d ${CF_Domain} -d *.${CF_Domain} --log
         if [ $? -ne 0 ]; then
-            LOGE "证书签发失败，脚本退出..."
+            LOGE "The certificate issuance failed and the script exits..."
             exit 1
         else
-            LOGI "证书签发成功，正在安装..."
+            LOGI "The certificate was issued successfully and is being installed..."
         fi
         ~/.acme.sh/acme.sh --installcert -d ${CF_Domain} -d *.${CF_Domain} --ca-file /root/cert/ca.cer \
             --cert-file /root/cert/${CF_Domain}.cer --key-file /root/cert/${CF_Domain}.key \
             --fullchain-file /root/cert/fullchain.cer
         if [ $? -ne 0 ]; then
-            LOGE "证书安装失败，脚本退出..."
+            LOGE "The certificate installation failed and the script exits..."
             exit 1
         else
-            LOGI "证书安装成功，开启自动更新..."
-            LOGE "最后记得给xray-ui配置证书， 选择22 重置ssl证书"
+            LOGI "The certificate is successfully installed and automatic update is turned on..."
+            LOGE "Finally, remember to configure the certificate for xray-ui, select 22 to reset the ssl certificate"
         fi
         ~/.acme.sh/acme.sh --upgrade --auto-upgrade
         if [ $? -ne 0 ]; then
-            LOGE "自动更新设置失败，脚本退出..."
+            LOGE "The automatic update setting failed and the script exits..."
             ls -lah cert
             chmod 755 $certPath
             exit 1
         else
-            LOGI "证书已安装并开启自动更新，具体信息如下:"
+            LOGI "The certificate has been installed and automatic renewal is turned on. The specific information is as follows:"
             ls -lah cert
             chmod 755 $certPath
         fi
@@ -825,71 +825,71 @@ ssl_cert_issue_CF() {
 }
 
 show_usage() {
-    echo "xray-ui 管理脚本使用方法: "
+    echo "xray-ui How to use management scripts: "
     echo "------------------------------------------"
-    echo "xray-ui              - 显示管理菜单"
-    echo "xray-ui start        - 启动 xray-ui 面板"
-    echo "xray-ui stop         - 停止 xray-ui 面板"
-    echo "xray-ui restart      - 重启 xray-ui 面板"
-    echo "xray-ui status       - 查看 xray-ui 状态"
-    echo "xray-ui enable       - 设置 xray-ui 开机自启"
-    echo "xray-ui disable      - 取消 xray-ui 开机自启"
-    echo "xray-ui log          - 查看 xray-ui 日志"
-    echo "xray-ui v2-ui        - 迁移本机器的 v2-ui 账号数据至 xray-ui"
-    echo "xray-ui update       - 更新 xray-ui 面板"
-    echo "xray-ui geoip        - 更新 geoip ip库"
-    echo "xray-ui update_shell - 更新 xray-ui 脚本"
-    echo "xray-ui install      - 安装 xray-ui 面板"
-    echo "xray-ui x25519       - REALITY  key 生成"
-    echo "xray-ui ssl_main     - SSL 证书管理"
-    echo "xray-ui ssl_CF       - Cloudflare SSL 证书"
-    echo "xray-ui crontab      - 添加geoip到任务计划每天凌晨1.30执行"
-    echo "xray-ui uninstall    - 卸载 xray-ui 面板"
+    echo "xray-ui              - Display the management menu"
+    echo "xray-ui start        - Start the xray-ui panel"
+    echo "xray-ui stop         - Stop the xray-ui pane"
+    echo "xray-ui restart      - Restart the xray-ui panel"
+    echo "xray-ui status       - View xray-ui status"
+    echo "xray-ui enable       - Set xray-ui to boot and start"
+    echo "xray-ui disable      - Cancel xray-ui boot and start"
+    echo "xray-ui log          - View xray-ui log"
+    echo "xray-ui v2-ui        - Migrate the v2-ui account data of this machine to xray-ui"
+    echo "xray-ui update       - Update the xray-ui panel"
+    echo "xray-ui geoip        - Update geoip ip library"
+    echo "xray-ui update_shell - Update xray-ui script"
+    echo "xray-ui install      - Install the xray-ui panel"
+    echo "xray-ui x25519       - REALITY key generation"
+    echo "xray-ui ssl_main     - SSL certificate management"
+    echo "xray-ui ssl_CF       - Cloudflare SSL certificate"
+    echo "xray-ui crontab      - Add geoip to the task plan to be executed at 1.30am every day"
+    echo "xray-ui uninstall    - Uninstall the xray-ui panel"
     echo "------------------------------------------"
 }
 
 show_menu() {
     echo -e "
-  ${green}xray-ui 面板管理脚本${plain}
-  ${green}0.${plain} 退出脚本
+  ${green}xray-ui Panel management script${plain}
+  ${green}0.${plain} Exit script
 ————————————————
-  ${green}1.${plain} 安装 xray-ui
-  ${green}2.${plain} 更新 xray-ui
-  ${green}3.${plain} 卸载 xray-ui
+  ${green}1.${plain} Install xray-ui
+  ${green}2.${plain} Update xray-ui
+  ${green}3.${plain} Uninstall xray-ui
 ————————————————
-  ${green}4.${plain} 重置用户名密码
-  ${green}5.${plain} 重置面板设置
-  ${green}6.${plain} 设置面板端口
-  ${green}7.${plain} 当前面板设置
+  ${green}4.${plain} Reset username and password
+  ${green}5.${plain} Reset panel settings
+  ${green}6.${plain} Set the panel port
+  ${green}7.${plain} Current panel settings
 ————————————————
-  ${green}8.${plain} 启动 xray-ui
-  ${green}9.${plain} 停止 xray-ui
-  ${green}10.${plain} 重启 xray-ui
-  ${green}11.${plain} 查看 xray-ui 状态
-  ${green}12.${plain} 查看 xray-ui 日志
+  ${green}8.${plain} Start xray-ui
+  ${green}9.${plain} Stop xray-ui
+  ${green}10.${plain} Restart xray-ui
+  ${green}11.${plain} View xray-ui status
+  ${green}12.${plain} View xray-ui log
 ————————————————
-  ${green}13.${plain} 设置 xray-ui 开机自启
-  ${green}14.${plain} 取消 xray-ui 开机自启
+  ${green}13.${plain} Set up xray-ui boot self-starting
+  ${green}14.${plain} Cancel xray-ui boot self-starting
 ————————————————
-  ${green}15.${plain} xray REALITY x25519 生成 
-  ${green}16.${plain} 更新 xray-ui 脚本
-  ${green}17.${plain} 更新 geoip ip库
-  ${green}18.${plain} 添加geoip到任务计划
-  ${green}19.${plain} SSL 证书管理
-  ${green}20.${plain} Cloudflare SSL 证书
-  ${green}21.${plain} 重置web 路径
-  ${green}22.${plain} 重置ssl证书
-  ${green}23.${plain} 重置mTLS证书
+  ${green}15.${plain} xray REALITY x25519 generate
+  ${green}16.${plain} update xray-ui script
+  ${green}17.${plain} update geoip ip library
+  ${green}18.${plain} Add geoip to task schedule
+  ${green}19.${plain} SSL Certificate management
+  ${green}20.${plain} Cloudflare SSL certificate
+  ${green}21.${plain} Reset the web path
+  ${green}22.${plain} Reset ssl certificate
+  ${green}23.${plain} Reset mTLS certificate
  "
     show_status
     echo "------------------------------------------"
     acp=$(/usr/local/xray-ui/xray-ui setting -show 2>/dev/null)
     green "$acp"
-    tlsx=$(/usr/local/xray-ui/xray-ui setting -show 2>&1 | grep 证书文件)
+    tlsx=$(/usr/local/xray-ui/xray-ui setting -show 2>&1 | grep Certificate file)
     if [ -z "${tlsx}" ]; then
-    yellow "当前面板http只支持127.0.0.1访问如果外面访问请用ssh转发或者nginx代理或者xray-ui 配置证书 选择22配置证书"
-    yellow "ssh 转发 客户机操作 ssh  -f -N -L 127.0.0.1:22222(ssh代理端口未使用端口):127.0.0.1:54321(xray-ui 端口) root@8.8.8.8(xray-ui 服务器ip)"
-    yellow "浏览器访问 http://127.0.0.1:22222(ssh代理端口未使用端口)/path(web访问路径)"
+    yellow "The current panel http only supports 127.0.0.1 access. If you access it from outside, please use ssh forwarding or nginx proxy or xray-ui to configure the certificate. Select 22 to configure the certificate."
+    yellow "ssh Forward client operation ssh-f-N-L 127.0.0.1:22222 (ssh proxy port unused port): 127.0.0.1:54321 (xray-ui port) root@8.8.8.8 (xray-ui server ip)"
+    yellow "Browser access http://127.0.0.1:22222 (ssh proxy port unused port)/path (web access path)"
     fi
     echo "------------------------------------------"
     uiV=$(/usr/local/xray-ui/xray-ui -v)
@@ -898,13 +898,13 @@ show_menu() {
     rm /tmp/tmp_file -f
     localV=${uiV}
     if [ "${localV}" = "${remoteV}" ]; then
-        green "已安装最新版本：${uiV} ，如有更新，此处会自动提示"
+        green "The latest version is installed：${uiV} ，If there is an update, it will be automatically prompted here"
     else
-        green "当前安装的版本：${uiV}"
-        yellow "检测到最新版本：${remoteV} ，可选择2进行更新！"
+        green "Currently installed version：${uiV}"
+        yellow "The latest version is detected：${remoteV} ，You can choose 2 to update！"
     fi
 
-    echo && read -p "请输入选择 [0-23]: " num
+    echo && read -p "Please enter a selection [0-23]: " num
 
     case "${num}" in
     0)
@@ -980,7 +980,7 @@ show_menu() {
         check_install && reset_mTLS
         ;;
     *)
-        echo -e "${red}请输入正确的数字 [0-23]${plain}"
+        echo -e "${red}Please enter the correct number [0-23]${plain}"
         ;;
     esac
 }

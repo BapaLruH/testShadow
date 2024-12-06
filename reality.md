@@ -1,16 +1,16 @@
 xray-ui 面板配置 reality
 
 ```bash
-# 生成 Private key 与 Public key
-# 两种方案
-# 1、 xray 客户端生成  amd64 arm64 
+# Generate Private key and Public key
+# Two schemes
+#1. xray client generates amd64 arm64
 /usr/local/xray-ui/bin/xray-linux-amd64 x25519
-# 更新xray-ui 到最新版本
+# Update xray-ui to the latest version
  xray-ui x25519
- # shortIds 生成  0 到 f，长度为 2 的倍数，长度上限为 16，或执行 openssl rand -hex 8 生成 可以为空不填 可以多行
-                     "shortIds": [ // 客户端可用的 shortId 列表，可用于区分不同的客户端
-                        "", // 若有此项，客户端 shortId 可为空
-                        "a1", // 0 到 f，长度为 2 的倍数，长度上限为 16，或执行 openssl rand -hex 8 生成
+ # shortIds Generate 0 to f, a multiple of 2 in length, and the upper limit of length is 16, or execute openssl rand-hex 8 to generate multiple lines that can be empty without filling in.
+                     "shortIds": [ // A list of shortids available to clients, which can be used to distinguish between different clients
+                        "", // If there is this item, the client shortId can be empty
+                        "a1", // 0 to f, the length is a multiple of 2, the upper limit of the length is 16, or perform openssl rand-hex 8 generation
                         "bc19",
                         "b2da06",
                         "2d940fe6",
@@ -21,8 +21,8 @@ xray-ui 面板配置 reality
                     ]
 ```
 
-dest 回源到自己nginx 服务器 用自己域名访问不会报证书问题
-nginx.conf 配置
+dest Going back to the source to your own nginx server and accessing with your own domain name will not report a certificate problem
+nginx.conf configuration
 
 ```nginx
 user nginx;
@@ -82,7 +82,7 @@ http {
         resolver_timeout    2s;
 
         location / {
-            sub_filter                         $proxy_host $host; # xray 非标准端口 改成 $proxy_host $http_host; 这样机可以域名加端口实现完整访问 
+            sub_filter                         $proxy_host $host; # xray The non-standard port is changed to $proxy_host $http_host; in this way, the machine can add the domain name and the port to achieve complete access.
             sub_filter_once                    off;
 
             proxy_pass                         https://www.lovelive-anime.jp;
@@ -113,18 +113,18 @@ http {
 
 ```
 
-面板配置示例：
+Panel configuration example：
 
 ![vless+xtls+tcp+reality](./media/vless+xtls+tcp+reality.png)
 ![vless+grpc+reality](./media/vless+grpc+reality.png)
 ![vless+H2+reality](./media/vless+H2+reality.png)
 ![trojan+grpc+reality](./media/trojan+grpc+reality.png)
 
-客户端配置
+Client configuration
 
 1、Clash.Meta
 
- Clash.Meta 不能对vless-h2-reality测速
+ Clash.Meta Cannot measure the speed of vless-h2-reality
 
 ```yaml
 
@@ -180,6 +180,6 @@ proxies:
 
 ```
 
-2 xray 原生配置参考:
+2 xray Native configuration reference:
 
 `https://github.com/chika0801/Xray-examples`

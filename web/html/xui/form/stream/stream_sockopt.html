@@ -28,7 +28,7 @@
                 <a-form-item label="domainStrategy">
                     <a-select v-model="inbound.stream.sockopt.domainStrategy" style="width:200px">
                         <a-select-option v-for="key in DOMAIN_STRATEGY" :value="key">[[ key ]]</a-select-option>
-                        </a-se-chlect>
+                        </a-select>
                 </a-form-item>
                 <a-form-item label="dialerProxy">
                     <a-input v-model.trim="inbound.stream.sockopt.dialerProxy" style="width: 165px"></a-input>
@@ -51,7 +51,7 @@
                 </a-form-item>
                 <a-form-item label="tcpcongestion">
                     <a-select v-model="inbound.stream.sockopt.tcpcongestion" style="width:200px">
-                        <a-select-option value="">系统默认</a-select-option>
+                        <a-select-option value="">System default</a-select-option>
                         <a-select-option v-for="key in TCP_CONGESTION" :value="key">[[ key ]]</a-select-option>
                     </a-select>
                 </a-form-item>
@@ -74,9 +74,8 @@
                     <a-switch v-model="inbound.stream.sockopt.tcpNoDelay">
                     </a-switch>
                 </a-form-item>
-
-
             </a-card>
         </transition>
     </a-form>
+</a-form>
     {{end}}

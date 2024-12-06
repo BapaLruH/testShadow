@@ -16,15 +16,15 @@ white() { echo -e "\033[37m\033[01m$1\033[0m"; }
 readp() { read -p "$(yellow "$1")" $2; }
 remoteV=${releases_version}
 clear
-white "Github项目  ：github.com/qist/xray-ui"
-yellow "感谢xray-ui代码贡献者们（vaxilu）"
-green "当前安装版本： $remoteV"
+white "Github project  ：github.com/qist/xray-ui"
+yellow "Thanks to xray-ui code contributors（vaxilu）"
+green "Current installed version： $remoteV"
 yellow "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 sleep 2
 cur_dir=$(pwd)
 
 # check root
-[[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本！\n" && exit 1
+[[ $EUID -ne 0 ]] && echo -e "${red}Error：${plain} You must use the root user to run this script！\n" && exit 1
 
 # check os
 
@@ -45,7 +45,7 @@ elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
 elif cat /etc/system-release-cpe | grep -Eqi "amazon_linux"; then
     release="amazon_linux"
 else
-    echo -e "${red}未检测到系统版本，请联系脚本作者！${plain}\n" && exit 1
+    echo -e "${red}The system version is not detected, please contact the script author！${plain}\n" && exit 1
 fi
 
 arch() {
@@ -71,11 +71,11 @@ sys() {
 op=$(sys)
 version=$(uname -r | awk -F "-" '{print $1}')
 vi=$(systemd-detect-virt)
-white "VPS操作系统: $(blue "$op") \c" && white " 内核版本: $(blue "$version") \c" && white " CPU架构 : $(blue "$arch") \c" && white " 虚拟化类型: $(blue "$vi")"
+white "VPS operating system: $(blue "$op") \c" && white " Kernel version: $(blue "$version") \c" && white " CPU architecture : $(blue "$arch") \c" && white " Type of virtualization: $(blue "$vi")"
 sleep 2
 
 if [ $(getconf WORD_BIT) != '32' ] && [ $(getconf LONG_BIT) != '64' ]; then
-    echo "本软件不支持 32 位系统(x86)，请使用 64 位系统(x86_64)，如果检测有误，请联系作者"
+    echo "This software does not support 32-bit systems (x86), please use 64-bit systems (x86_64), if the detection is incorrect, please contact the author"
     exit -1
 fi
 
@@ -91,29 +91,29 @@ fi
 
 if [[ x"${release}" == x"centos" ]]; then
     if [[ ${os_version} -le 6 ]]; then
-        echo -e "${red}请使用 CentOS 7 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Please use CentOS 7 or later system！${plain}\n" && exit 1
     fi
 elif [[ x"${release}" == x"ubuntu" ]]; then
     if [[ ${os_version} -lt 16 ]]; then
-        echo -e "${red}请使用 Ubuntu 16 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Please use Ubuntu 16 or later system！${plain}\n" && exit 1
     fi
 elif [[ x"${release}" == x"debian" ]]; then
     if [[ ${os_version} -lt 8 ]]; then
-        echo -e "${red}请使用 Debian 8 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Please use a system of Debian 8 or later！${plain}\n" && exit 1
     fi
 elif [[ x"${release}" == x"amazon_linux" ]]; then
     if [[ ${os_version} -lt 2 ]]; then
-        echo -e "${red}请使用 Amazon Linux 2 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Please use Amazon Linux 2 or later system！${plain}\n" && exit 1
     fi
 fi
 ports=$(/usr/local/xray-ui/xray-ui 2>&1 | grep tcp | awk '{print $5}' | sed "s/://g")
 if [[ -n $ports ]]; then
-    green "经检测，xray-ui已安装"
+    green "After testing, xray-ui has been installed"
     echo
     acp=$(/usr/local/xray-ui/xray-ui setting -show 2>/dev/null)
     green "$acp"
     echo
-    readp "是否直接重装xray-ui，请输入Y/y键并回车。如不重装，输入N/n键回车退出脚本):" ins
+    readp "Whether to reinstall xray-ui directly, please enter the Y/y key and enter.If you do not reinstall, enter the N/n key and enter to exit the script):" ins
     if [[ $ins = [Yy] ]]; then
         systemctl stop xray-ui
         systemctl disable xray-ui
@@ -143,11 +143,11 @@ install_base() {
 }
 generate_random_string() {
     local n=$1
-    # 定义数字、大写字母和小写字母的集合
+    # Define a collection of numbers, uppercase letters, and lowercase letters
     local characters='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 
-    # 生成随机字符并限制在指定字符集中
-    # 从 /dev/urandom 生成随机字节，使用 tr 进行过滤
+    # Generate random characters and limit them to the specified character set
+    # Generate random bytes from /dev/urandom, use tr to filter
     local random_string=$(cat /dev/urandom | tr -dc "$characters" | fold -w "$n" | head -n 1)
 
     echo "$random_string"
@@ -159,17 +159,17 @@ install_xray-ui() {
     if [ $# == 0 ]; then
         wget --no-check-certificate -O /usr/local/xray-ui-linux-$(arch).tar.gz https://github.com/qist/xray-ui/releases/download/${releases_version}/xray-ui-linux-$(arch).tar.gz
         if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载 xray-ui 失败，请确保你的服务器能够下载 Github 的文件${plain}"
+            echo -e "${red}Downloading xray-ui failed, please make sure your server can download the Github file${plain}"
             rm -f install.sh
             exit 1
         fi
     else
         last_version=$1
         url="https://github.com/qist/xray-ui/releases/download/${releases_version}/xray-ui-linux-$(arch).tar.gz"
-        echo -e "开始安装 xray-ui v$1"
+        echo -e "Start installation xray-ui v$1"
         wget  --no-check-certificate -O /usr/local/xray-ui-linux-$(arch).tar.gz ${url}
         if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载 xray-ui v$1 失败，请确保此版本存在${plain}"
+            echo -e "${red}Failed to download xray-ui v$1, please make sure this version exists${plain}"
             rm -f install.sh
             exit 1
         fi
@@ -189,7 +189,7 @@ install_xray-ui() {
     fi   
     chmod +x xray-ui bin/xray-linux-$(arch)
     cp -f xray-ui.service /etc/systemd/system/
-    wget --no-check-certificate -O /usr/bin/xray-ui https://raw.githubusercontent.com/qist/xray-ui/main/xray-ui.sh
+    wget --no-check-certificate -O /usr/bin/xray-ui https://raw.githubusercontent.com/BapaLruH/testShadow/main/xray-ui.sh
     chmod +x /usr/bin/xray-ui
     systemctl daemon-reload
     systemctl enable xray-ui
@@ -214,57 +214,57 @@ EOF
     echo "0 1 1 * *  root xray-ui restart >/dev/null 2>&1" >>/etc/crontab
     sleep 1
     echo -e ""
-    blue "以下设置内容建议自定义，以防止账号密码路径及端口泄露"
+    blue "The following settings are recommended to be customized to prevent the account password path and port from being leaked"
     echo -e ""
-    readp "设置xray-ui登录用户名（回车跳过为随机6位字符）：" username
+    readp "Set the xray-ui login user name (enter to skip to random 6 characters)：" username
     if [[ -z ${username} ]]; then
         uauto=$(date +%s%N | md5sum | cut -c 1-6)
         username=$uauto
     fi
     sleep 1
-    green "xray-ui登录用户名：${username}"
+    green "xray-ui username：${username}"
     echo -e ""
-    readp "设置xray-ui登录密码（回车跳过为随机6位字符）：" password
+    readp "Set the xray-ui login password (enter and skip to random 6 characters)：" password
     if [[ -z ${password} ]]; then
         pauto=$(date +%s%N | md5sum | cut -c 1-6)
         password=$pauto
     fi
-    green "xray-ui登录密码：${password}"
+    green "xray-ui password：${password}"
     /usr/local/xray-ui/xray-ui setting -username ${username} -password ${password} >/dev/null 2>&1
     sleep 1
     echo -e ""
-    readp "设置xray-ui登录端口[1-65535]（回车跳过为2000-65535之间的随机端口）：" port
+    readp "Set the xray-ui login port [1-65535] (enter to skip to a random port between 2000-65535)：" port
     if [[ -z $port ]]; then
         port=$(shuf -i 2000-65535 -n 1)
         until [[ -z $(ss -ntlp | awk '{print $4}' | grep -w "$port") ]]; do
-            [[ -n $(ss -ntlp | awk '{print $4}' | grep -w "$port") ]] && yellow "\n端口被占用，请重新输入端口" && readp "自定义xray-ui端口:" port
+            [[ -n $(ss -ntlp | awk '{print $4}' | grep -w "$port") ]] && yellow "\nThe port is occupied, please re-enter the port" && readp "Custom xray-ui port:" port
         done
     else
         until [[ -z $(ss -ntlp | awk '{print $4}' | grep -w "$port") ]]; do
-            [[ -n $(ss -ntlp | awk '{print $4}' | grep -w "$port") ]] && yellow "\n端口被占用，请重新输入端口" && readp "自定义xray-ui端口:" port
+            [[ -n $(ss -ntlp | awk '{print $4}' | grep -w "$port") ]] && yellow "\nThe port is occupied, please re-enter the port" && readp "Custom xray-ui port:" port
         done
     fi
     /usr/local/xray-ui/xray-ui setting -port $port >/dev/null 2>&1
-    green "xray-ui登录端口：${port}"
+    green "xray-ui port：${port}"
     sleep 1
     echo -e ""
-    readp "设置xray-ui web 路径 （回车跳过为随机10位字符）：" path
+    readp "Set the xray-ui web path (enter and skip to random 10 characters)：" path
     if [[ -z ${path} ]]; then
         path=$(generate_random_string 10)
     fi
     /usr/local/xray-ui/xray-ui setting -webBasePath $path >/dev/null 2>&1
-    green "xray-ui web 路径：${path}"
+    green "xray-ui web path：${path}"
     sleep 1
     xray-ui restart
     xuilogin() {
         v4=$(curl -s4m8 http://ip.sb -k)
         v6=$(curl -s6m8 http://ip.sb -k)
         if [[ -z $v4 ]]; then
-            int="${green}请在浏览器地址栏复制${plain}  ${bblue}[$v6]:$ports/$path${plain}  ${green}进入xray-ui登录界面\n当前xray-ui登录用户名：${plain}${bblue}${username}${plain}${green} \n当前xray-ui登录密码：${plain}${bblue}${password}${plain}"
+            int="${green}Please copy in the browser address bar${plain}  ${bblue}[$v6]:$ports/$path${plain}  ${green}Enter the xray-ui login interface \n current xray-ui login user name：${plain}${bblue}${username}${plain}${green} \nCurrent xray-ui login password：${plain}${bblue}${password}${plain}"
         elif [[ -n $v4 && -n $v6 ]]; then
-            int="${green}请在浏览器地址栏复制${plain}  ${bblue}$v4:$ports/$path${plain}  ${yellow}或者${plain}  ${bblue}[$v6]:$ports/$path${plain}  ${green}进入xray-ui登录界面\n当前xray-ui登录用户名：${plain}${bblue}${username}${plain}${green} \n当前xray-ui登录密码：${plain}${bblue}${password}${plain}"
+            int="${green}Please copy in the browser address bar${plain}  ${bblue}$v4:$ports/$path${plain}  ${yellow}or${plain}  ${bblue}[$v6]:$ports/$path${plain}  ${green}Enter the xray-ui login interface \n current xray-ui login user name：${plain}${bblue}${username}${plain}${green} \nCurrent xray-ui login password：${plain}${bblue}${password}${plain}"
         else
-            int="${green}请在浏览器地址栏复制${plain}  ${bblue}$v4:$ports/$path${plain}  ${green}进入xray-ui登录界面\n当前xray-ui登录用户名：${plain}${bblue}${username}${plain}${green} \n当前xray-ui登录密码：${plain}${bblue}${password}${plain}"
+            int="${green}Please copy in the browser address bar${plain}  ${bblue}$v4:$ports/$path${plain}  ${green}Enter the xray-ui login interface \n current xray-ui login user name：${plain}${bblue}${username}${plain}${green} \nCurrent xray-ui login password：${plain}${bblue}${password}${plain}"
         fi
     }
 ssh_forwarding() {
@@ -273,97 +273,97 @@ ssh_forwarding() {
     v6=$(curl -s6m8 http://ip.sb -k)
 
     echo -e ""
-    read -p "设置 xray-ui ssh 转发端口 [1-65535]（回车跳过为 2000-65535 之间的随机端口）：" ssh_port
+    read -p "Set the xray-ui ssh forwarding port [1-65535] (enter to skip to a random port between 2000-65535)：" ssh_port
 
-    # 如果未输入端口，则随机生成一个2000-65535之间的端口
+    # If no port is entered, a port between 2000-65535 is randomly generated
     if [[ -z $ssh_port ]]; then
         ssh_port=$(shuf -i 2000-65535 -n 1)
     fi
 
-    # 检查端口是否被占用，直到找到未占用的端口
+    # Check if the port is occupied until an unoccupied port is found
     while [[ -n $(ss -ntlp | awk '{print $4}' | grep -w ":$ssh_port") ]]; do
-        echo -e "\n端口 $ssh_port 被占用，请重新输入端口"
-        read -p "自定义 xray-ui ssh 转发端口:" ssh_port
+        echo -e "\nport $ssh_port Occupied, please re-enter the port"
+        read -p "Custom xray-ui ssh forwarding port:" ssh_port
         if [[ -z $ssh_port ]]; then
             ssh_port=$(shuf -i 2000-65535 -n 1)
         fi
     done
 
-    # 检查 IP 并输出相应的 SSH 和浏览器访问信息
+    # Check the IP and output the corresponding SSH and browser access information
     if [[ -z $v4 ]]; then
         # echo -e "${green}请在 xray-ui 服务器系统输入${plain} ${bblue}ssh  -f -N -L [::]:$ssh_port:127.0.0.1:$ports root@127.0.0.1${plain} 输入 root 密码进行转发 不建议使用"
         # echo -e "${green}请在浏览器地址栏复制${plain} ${bblue}[$v6]:$ssh_port/$path${plain} ${green}进入 xray-ui 登录界面"
-        echo -e "${green}客户端转发 安全性高${plain} ${bblue}ssh  -f -N -L [::]:$ssh_port:127.0.0.1:$ports root@[$v6]${plain} 输入 root 密码进行转发"
-        echo -e "${green}请在浏览器地址栏复制${plain} ${bblue}[::1]:$ssh_port/$path${plain} ${green}进入 xray-ui 登录界面"
-        echo -e "${green}当前 xray-ui 登录用户名：${plain}${bblue}${username}${plain}"
-        echo -e "${green}当前 xray-ui 登录密码：${plain}${bblue}${password}${plain}"
-        yellow "不使用ssh 转发请配置nginx https代理或者xray-ui 配置证书"
+        echo -e "${green}High client forwarding security${plain} ${bblue}ssh  -f -N -L [::]:$ssh_port:127.0.0.1:$ports root@[$v6]${plain} Enter the root password for forwarding"
+        echo -e "${green}Please copy in the browser address bar${plain} ${bblue}[::1]:$ssh_port/$path${plain} ${green}Enter the xray-ui login interface"
+        echo -e "${green}Current xray-ui login user name：${plain}${bblue}${username}${plain}"
+        echo -e "${green}Current xray-ui login password：${plain}${bblue}${password}${plain}"
+        yellow "If you do not use ssh forwarding, please configure the nginx https proxy or xray-ui configuration certificate"
     elif [[ -n $v4 && -n $v6 ]]; then
         # echo -e "${green}请在  xray-ui 服务器系统输入${plain} ${bblue}ssh  -f -N -L 0.0.0.0:$ssh_port:127.0.0.1:$ports root@127.0.0.1${plain} ${yellow}或者 ${bblue}ssh  -f -N -L [::]:$ssh_port:127.0.0.1:$ports root@127.0.0.1${plain} 输入 root 密码进行转发 不建议使用"
         # echo -e "${green}请在浏览器地址栏复制${plain} ${bblue}$v4:$ssh_port/$path${plain} ${yellow}或者${plain} ${bblue}[$v6]:$ssh_port/$path${plain} ${green}进入 xray-ui 登录界面"
-        echo -e "${green}客户端转发 安全性高 ${plain} ${bblue}ssh  -f -N -L 0.0.0.0:$ssh_port:127.0.0.1:$ports root@$v4${plain} ${yellow}或者 ${bblue}ssh  -f -N -L [::]:$ssh_port:127.0.0.1:$ports root@[$v6]${plain} 输入 root 密码进行转发"
-        echo -e "${green}请在浏览器地址栏复制${plain} ${bblue}127.0.0.1:$ssh_port/$path${plain} ${yellow}或者${plain} ${bblue}[::1]:$ssh_port/$path${plain} ${green}进入 xray-ui 登录界面"
-        echo -e "${green}当前 xray-ui 登录用户名：${plain}${bblue}${username}${plain}"
-        echo -e "${green}当前 xray-ui 登录密码：${plain}${bblue}${password}${plain}"
-        yellow "不使用ssh 转发请配置nginx https代理或者xray-ui 配置证书"
+        echo -e "${green}High client forwarding security ${plain} ${bblue}ssh  -f -N -L 0.0.0.0:$ssh_port:127.0.0.1:$ports root@$v4${plain} ${yellow}or ${bblue}ssh  -f -N -L [::]:$ssh_port:127.0.0.1:$ports root@[$v6]${plain} Enter the root password for forwarding"
+        echo -e "${green}Please copy in the browser address bar${plain} ${bblue}127.0.0.1:$ssh_port/$path${plain} ${yellow}or${plain} ${bblue}[::1]:$ssh_port/$path${plain} ${green}进入 xray-ui 登录界面"
+        echo -e "${green}Current xray-ui login user name：${plain}${bblue}${username}${plain}"
+        echo -e "${green}Current xray-ui login password：${plain}${bblue}${password}${plain}"
+        yellow "If you do not use ssh forwarding, please configure the nginx https proxy or xray-ui configuration certificate"
     else
         # echo -e "${green}请在  xray-ui 服务器系统输入${plain} ${bblue}ssh  -f -N -L 0.0.0.0:$ssh_port:127.0.0.1:$ports root@127.0.0.1${plain} 输入 root 密码进行转发 "
         # echo -e "${green}请在浏览器地址栏复制${plain} ${bblue}$v4:$ssh_port/$path${plain} ${green}进入 xray-ui 登录界面"
-        echo -e "${green}客户端转发 安全性高${plain} ${bblue}ssh  -f -N -L 0.0.0.0:$ssh_port:127.0.0.1:$ports root@$v4${plain} 输入 root 密码进行转发"
-        echo -e "${green}请在浏览器地址栏复制${plain} ${bblue}127.0.0.1:$ssh_port/$path${plain} ${green}进入 xray-ui 登录界面"
-        echo -e "${green}当前 xray-ui 登录用户名：${plain}${bblue}${username}${plain}"
-        echo -e "${green}当前 xray-ui 登录密码：${plain}${bblue}${password}${plain}"
-        yellow "不使用ssh 转发请配置nginx https代理或者xray-ui 配置证书"
+        echo -e "${green}High client forwarding security${plain} ${bblue}ssh  -f -N -L 0.0.0.0:$ssh_port:127.0.0.1:$ports root@$v4${plain} Enter the root password for forwarding"
+        echo -e "${green}Please copy in the browser address bar${plain} ${bblue}127.0.0.1:$ssh_port/$path${plain} ${green}Enter the xray-ui login interface"
+        echo -e "${green}Current xray-ui login user name：${plain}${bblue}${username}${plain}"
+        echo -e "${green}Current xray-ui login password：${plain}${bblue}${password}${plain}"
+        yellow "If you do not use ssh forwarding, please configure the nginx https proxy or xray-ui configuration certificate"
     fi
     }
     ports=$(/usr/local/xray-ui/xray-ui 2>&1 | grep "tcp" | awk '{print $5}' | cut -d':' -f2)
     if [[ -n $ports ]]; then
         echo -e ""
-        yellow "xray-ui $remoteV 安装成功，请稍等3秒，检测IP环境，输出xray-ui登录信息……"
+        yellow "xray-ui $remoteV The installation is successful, please wait 3 seconds, detect the IP environment, and output the xray-ui login information……"
         ssh_forwarding
-        yellow "下面是xray-ui tls mTLS 配置信息"
-        yellow "证书管理 xray-ui ssl_main  cf 证书申请 xray-ui ssl_CF"
-        yellow "TLS 配置 /usr/local/xray-ui/xray-ui cert -webCert /root/cert/你的域名/fullchain.pem -webCertKey /root/cert/你的域名/privkey.pem 重启 xray-ui restart 生效"
-        yellow "mTLS 配置 /usr/local/xray-ui/xray-ui cert -webCert /root/cert/你的域名/fullchain.pem -webCertKey /root/cert/你的域名/privkey.pem -webCa /root/cert/ca.cer 重启 xray-ui restart 生效"
-        yellow "访问：https://你的域名:$ports/$path"
-        yellow "mTLS windows 使用....."
-        yellow "生成windows客户端证书 client.p12..."
-        yellow "openssl pkcs12 -export -out client.p12 -inkey /root/cert/你的域名/privkey.pem -in  /root/cert/${domain}.cer -certfile /root/cert/ca.cer"
-        yellow "client.p12: windows客户端证书 记得设置密码 导入证书需要密码"
-        yellow "client.p12 文件导入windows系统 桌面双击打开->导入->下一步->将所有证书都放入下列存储->个人->完成 如果导入失败开始菜单搜证书 打开管理用户证书管理->个人->所有任务->导入->输入密码"
+        yellow "The following is the xray-ui tls mTLS configuration information"
+        yellow "Certificate management xray-ui ssl_main cf certificate application xray-ui ssl_CF"
+        yellow "TLS configuration/usr/local/xray-ui/xray-ui cert-webCert/root/cert/your domain name/full chain.pem-webCertKey /root/cert/your domain name/privkey.pem restart xray-ui restart takes effect"
+        yellow "mTLS configuration/usr/local/xray-ui/xray-ui cert-webCert/root/cert/your domain name/full chain.pem-webCertKey /root/cert/your domain name/privkey.pem -webCa /root/cert/ca.cer restart xray-ui restart takes effect"
+        yellow "Visit: https:// Your domain name:$ports/$path"
+        yellow "mTLS windows use....."
+        yellow "Generate windows client certificate client.p12..."
+        yellow "openssl pkcs12 -export -out client.p12-inkey /root/cert/Your domain name/privkey.pem -in  /root/cert/${domain}.cer -certfile /root/cert/ca.cer"
+        yellow "client.p12: windows remember to set a password for the client certificate. A password is required to import the certificate."
+        yellow "client.p12 File import on the windows system desktop, double-click to open->Import->Next->put all certificates in the following storage->Personal->Complete If the import fails, search for certificates in the start menu to open management user certificate management->Personal->All tasks->Import->Enter password"
     
     else
-        red "xray-ui安装失败，请查看日志，运行 xray-ui log"
+        red "xray-ui The installation failed, please check the log and run xray-ui log"
     fi
     sleep 1
     echo -e ""
     echo -e "$int"
     echo -e ""
-    echo -e "xray-ui 管理脚本使用方法: "
+    echo -e "xray-ui How to use management scripts: "
     echo -e "----------------------------------------------"
-    echo -e "xray-ui              - 显示管理菜单"
-    echo -e "xray-ui start        - 启动 xray-ui 面板"
-    echo -e "xray-ui stop         - 停止 xray-ui 面板"
-    echo -e "xray-ui restart      - 重启 xray-ui 面板"
-    echo -e "xray-ui status       - 查看 xray-ui 状态"
-    echo -e "xray-ui enable       - 设置 xray-ui 开机自启"
-    echo -e "xray-ui disable      - 取消 xray-ui 开机自启"
-    echo -e "xray-ui log          - 查看 xray-ui 日志"
-    echo -e "xray-ui v2-ui        - 迁移本机器的 v2-ui 账号数据至 xray-ui"
-    echo -e "xray-ui update       - 更新 xray-ui 面板"
-    echo -e "xray-ui geoip        - 更新 geoip ip库"
-    echo -e "xray-ui update_shell - 更新 xray-ui 脚本"
-    echo -e "xray-ui install      - 安装 xray-ui 面板"
-    echo -e "xray-ui x25519       - REALITY  key 生成"
-    echo -e "xray-ui ssl_main     - SSL 证书管理"
-    echo -e "xray-ui ssl_CF       - Cloudflare SSL 证书"
-    echo -e "xray-ui crontab      - 添加geoip到任务计划每天凌晨1.30执行"    
-    echo -e "xray-ui uninstall    - 卸载 xray-ui 面板"
+    echo -e "xray-ui              - Show management menu"
+    echo -e "xray-ui start        - Start the xray-ui panel"
+    echo -e "xray-ui stop         - Stop the xray-ui panel"
+    echo -e "xray-ui restart      - Restart the xray-ui panel"
+    echo -e "xray-ui status       - View xray-ui status"
+    echo -e "xray-ui enable       - Set xray-ui to boot and start"
+    echo -e "xray-ui disable      - Cancel xray-ui boot and start"
+    echo -e "xray-ui log          - View xray-ui log"
+    echo -e "xray-ui v2-ui        - Migrate the v2-ui account data of this machine to xray-ui"
+    echo -e "xray-ui update       - Update the xray-ui panel"
+    echo -e "xray-ui geoip        - Update geoip ip library"
+    echo -e "xray-ui update_shell - Update xray-ui script"
+    echo -e "xray-ui install      - Install the xray-ui panel"
+    echo -e "xray-ui x25519       - REALITY key generation"
+    echo -e "xray-ui ssl_main     - SSL certificate management"
+    echo -e "xray-ui ssl_CF       - Cloudflare SSL certificate"
+    echo -e "xray-ui crontab      - Add geoip to the task plan to be executed at 1.30am every day"
+    echo -e "xray-ui uninstall    - Uninstall the xray-ui panel"
     echo -e "----------------------------------------------"
     rm -f install.sh
 }
 
-echo -e "${green}开始安装xray-ui必要依赖${plain}"
+echo -e "${green}Necessary dependencies to start installing xray-ui${plain}"
 install_base
-echo -e "${green}开始安装xray-ui核心组件${plain}"
+echo -e "${green}Start installing xray-ui core components${plain}"
 install_xray-ui $1

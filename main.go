@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/op/go-logging"
 	"log"
 	"os"
 	"os/signal"
@@ -15,7 +16,6 @@ import (
 	"xray-ui/web"
 	"xray-ui/web/global"
 	"xray-ui/web/service"
-	"github.com/op/go-logging"
 )
 
 func runWebServer() {
@@ -50,7 +50,7 @@ func runWebServer() {
 	}
 
 	sigCh := make(chan os.Signal, 1)
-	//信号量捕获处理
+	//Semaphore capture processing
 	signal.Notify(sigCh, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGKILL)
 	for {
 		sig := <-sigCh
@@ -128,31 +128,31 @@ func showSetting(show bool) {
 		if (username == "") || (userpasswd == "") {
 			fmt.Println("current username or password is empty")
 		}
-		fmt.Println("当前面板信息设置如下:")
-		fmt.Println("登录用户名:", username)
-		fmt.Println("登录密码:", userpasswd)
-		fmt.Println("登录端口:", port)
-		fmt.Println("监听地址:", listen)
+		fmt.Println("The current panel information is set as follows:")
+		fmt.Println("Username:", username)
+		fmt.Println("Password:", userpasswd)
+		fmt.Println("Port:", port)
+		fmt.Println("Address:", listen)
 		if webBasePath != "" {
-			fmt.Println("Web 路径:", webBasePath)
+			fmt.Println("Web path:", webBasePath)
 		} else {
-			fmt.Println("Web 路径 is not set")
+			fmt.Println("Web path is not set")
 		}
 		if GetCertFile != "" {
-			fmt.Println("证书文件:", GetCertFile)
-			fmt.Println("私钥文件:", GetKeyFile)
+			fmt.Println("Certificate file:", GetCertFile)
+			fmt.Println("Private key file:", GetKeyFile)
 		} else {
-			fmt.Println("证书 is not set")
+			fmt.Println("Certificate is not set")
 		}
 		if GetCaFile != "" {
-			fmt.Println("CA mTLS 开启:", GetCaFile)
+			fmt.Println("CA mTLS turn on:", GetCaFile)
 		} else {
 			fmt.Println("CA is not set")
 		}
 
 	}
 }
- 
+
 func updateTgbotEnableSts(status bool) {
 	settingService := service.SettingService{}
 	currentTgSts, err := settingService.GetTgbotenabled()
@@ -213,15 +213,15 @@ func updateTgbotSetting(tgBotToken string, tgBotChatid int, tgBotRuntime string)
 	}
 }
 
-func updateSetting(port int, username string, password string, listen  string, webBasePath string) {
+func updateSetting(port int, username string, password string, listen string, webBasePath string) {
 	err := database.InitDB(config.GetDBPath())
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
- 
+
 	settingService := service.SettingService{}
- 
+
 	if port > 0 {
 		err := settingService.SetPort(port)
 		if err != nil {
@@ -245,7 +245,7 @@ func updateSetting(port int, username string, password string, listen  string, w
 			fmt.Println("set listen failed:", err)
 		} else {
 			fmt.Printf("set listen %v success", listen)
-		}		 
+		}
 	}
 	if webBasePath != "" {
 		err := settingService.SetBasePath(webBasePath)
@@ -263,7 +263,7 @@ func UpdateAllip() {
 	if err != nil {
 		fmt.Println(err)
 		return
-	}	
+	}
 
 	serverService := service.ServerService{} // 创建 ServerService 实例
 
@@ -286,7 +286,7 @@ func UpdateAllip() {
 	}
 
 	fmt.Printf("GeoIP and Geosite files for version %s downloaded and updated successfully!\n", version)
-	
+
 	GeoipVersion := service.GeoipVersion{}
 	err = GeoipVersion.UpVersion(version)
 	if err != nil {
@@ -379,7 +379,7 @@ func main() {
 	settingCmd.StringVar(&tgbotRuntime, "tgbotRuntime", "", "set telegrame bot cron time")
 	settingCmd.IntVar(&tgbotchatid, "tgbotchatid", 0, "set telegrame bot chat id")
 	settingCmd.BoolVar(&enabletgbot, "enabletgbot", false, "enable telegram bot notify")
- 
+
 	oldUsage := flag.Usage
 	flag.Usage = func() {
 		oldUsage()
@@ -448,7 +448,7 @@ func main() {
 		if reset {
 			updateCert("", "", "")
 		} else {
-			updateCert(webCertFile, webKeyFile , webCAFile)
+			updateCert(webCertFile, webKeyFile, webCAFile)
 		}
 	default:
 		fmt.Println("except 'run' or 'v2-ui' or 'setting' subcommands")

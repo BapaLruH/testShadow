@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/curve25519"
-	"time"
-	"regexp"
 	"net/http"
+	"regexp"
+	"time"
 	"xray-ui/web/global"
 	"xray-ui/web/service"
 )
@@ -37,8 +37,8 @@ type ServerController struct {
 
 	lastGeositeVersions        []string
 	lastGeositeGetVersionsTime time.Time
-	xraysecretkey        map[string]string
-	version string
+	xraysecretkey              map[string]string
+	version                    string
 }
 
 func NewServerController(g *gin.RouterGroup) *ServerController {
@@ -85,16 +85,16 @@ func (a *ServerController) startTask() {
 		a.refreshStatus()
 	})
 }
-func (a *ServerController) getVersion(c *gin.Context)  {
+func (a *ServerController) getVersion(c *gin.Context) {
 	GeoipVersion := service.GeoipVersion{}
 	Version, err := GeoipVersion.GetVersion()
 	a.version = Version.Version
 	if err != nil {
 		fmt.Println("get current GetVersion failed,error info:", err)
 	}
-	jsonObj(c, a.version , nil)
+	jsonObj(c, a.version, nil)
 }
-func (a *ServerController) UpdateVersion(c *gin.Context)  {
+func (a *ServerController) UpdateVersion(c *gin.Context) {
 	version := c.Param("version")
 	GeoipVersion := service.GeoipVersion{}
 	err := GeoipVersion.UpVersion(version)
@@ -103,7 +103,7 @@ func (a *ServerController) UpdateVersion(c *gin.Context)  {
 
 	}
 	a.version = version
-	jsonObj(c, a.version , err)
+	jsonObj(c, a.version, err)
 }
 
 func (a *ServerController) status(c *gin.Context) {
@@ -121,7 +121,7 @@ func (a *ServerController) getXrayVersion(c *gin.Context) {
 
 	versions, err := a.serverService.GetXrayVersions()
 	if err != nil {
-		jsonMsg(c, "获取版本", err)
+		jsonMsg(c, "Get version", err)
 		return
 	}
 
@@ -134,7 +134,7 @@ func (a *ServerController) getXrayVersion(c *gin.Context) {
 func (a *ServerController) installXray(c *gin.Context) {
 	version := c.Param("version")
 	err := a.serverService.UpdateXray(version)
-	jsonMsg(c, "安装 xray", err)
+	jsonMsg(c, "Install xray", err)
 }
 
 func (a *ServerController) getGeoipVersion(c *gin.Context) {
@@ -146,7 +146,7 @@ func (a *ServerController) getGeoipVersion(c *gin.Context) {
 
 	versions, err := a.serverService.GetGeoipVersions()
 	if err != nil {
-		jsonMsg(c, "获取版本", err)
+		jsonMsg(c, "Get version", err)
 		return
 	}
 
@@ -159,13 +159,13 @@ func (a *ServerController) getGeoipVersion(c *gin.Context) {
 func (a *ServerController) installGeoip(c *gin.Context) {
 	version := c.Param("version")
 	err := a.serverService.UpdateGeoip(version)
-	jsonMsg(c, "安装 geoip", err)
+	jsonMsg(c, "Install geoip", err)
 }
 
 func (a *ServerController) installGeosite(c *gin.Context) {
 	version := c.Param("version")
 	err := a.serverService.UpdateGeosite(version)
-	jsonMsg(c, "安装 geosite", err)
+	jsonMsg(c, "Install geosite", err)
 }
 
 func (a *ServerController) XraySecretKey(c *gin.Context) {
@@ -176,8 +176,7 @@ func (a *ServerController) XraySecretKey(c *gin.Context) {
 	//fmt.Println("Public key:", publicKeyBase64)
 }
 
-
-func SecretKey() map[string]string  {
+func SecretKey() map[string]string {
 	// 生成私钥
 	privateKey := make([]byte, curve25519.ScalarSize)
 	if _, err := rand.Read(privateKey); err != nil {
@@ -200,7 +199,7 @@ func SecretKey() map[string]string  {
 	// 用 base64 编码密钥对
 	privateKeyBase64 := base64.RawURLEncoding.EncodeToString(privateKey)
 	publicKeyBase64 := base64.RawURLEncoding.EncodeToString(publicKey)
-        secretkey := make(map[string]string)
+	secretkey := make(map[string]string)
 	secretkey["key"] = privateKeyBase64
 	secretkey["value"] = publicKeyBase64
 	return secretkey
@@ -258,8 +257,8 @@ func (a *ServerController) getDb(c *gin.Context) {
 }
 
 func isValidFilename(filename string) bool {
-    // Validate that the filename only contains allowed characters
-    return filenameRegex.MatchString(filename)
+	// Validate that the filename only contains allowed characters
+	return filenameRegex.MatchString(filename)
 }
 
 func (a *ServerController) importDB(c *gin.Context) {
