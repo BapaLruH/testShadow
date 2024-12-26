@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	github.com/BurntSushi/toml v1.4.0
 	github.com/Workiva/go-datastructures v1.1.5
-	github.com/gin-contrib/sessions v1.0.1
+	github.com/gin-contrib/sessions v1.0.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/nicksnyder/go-i18n/v2 v2.4.1
@@ -14,8 +14,8 @@ require (
 	github.com/shirou/gopsutil/v3 v3.24.5
 	github.com/xtls/xray-core v1.8.25-0.20241201231301-03d7d07c5b77
 	go.uber.org/atomic v1.11.0
-	golang.org/x/crypto v0.29.0
-	golang.org/x/text v0.20.0
+	golang.org/x/crypto v0.31.0
+	golang.org/x/text v0.21.0
 	google.golang.org/grpc v1.68.0
 	gorm.io/driver/sqlite v1.5.6
 	gorm.io/gorm v1.25.12
@@ -57,8 +57,8 @@ require (
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	golang.org/x/arch v0.8.0 // indirect
-	golang.org/x/net v0.31.0 // indirect
-	golang.org/x/sys v0.27.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240903143218-8af14fe29dc1 // indirect
 	google.golang.org/protobuf v1.35.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
